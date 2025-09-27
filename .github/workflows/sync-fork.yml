@@ -1,0 +1,27 @@
+name: Sync Fork
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for merging
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/Lucas-Zhao/Sprites.git
+          git fetch upstream
+
+      - name: Merge upstream into main
+        run: |
+          git merge upstream/main -m "Syncing with upstream" # Replace 'main' with your branch name
+
+      - name: Push changes
+        run: git push origin main # Replace 'main' with your branch name
